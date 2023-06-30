@@ -1,0 +1,103 @@
+#include <iostream>
+#include <string>
+#include <cstddef>
+using namespace std;
+
+class Student {
+public:
+    int srCode;
+    string name;
+    string subjectCode;
+    string instructorName;
+    string scheduleTime;
+    Student* next;
+
+    Student(int srCode, const string& name, const string& subjectCode, const string& instructorName, const string& scheduleTime)
+        : srCode(srCode), name(name), subjectCode(subjectCode), instructorName(instructorName), scheduleTime(scheduleTime), next(nullptr) {}
+};
+
+class StudentList {
+private:
+    Student* head;
+
+public:
+    StudentList() : head(nullptr) {}
+
+    ~StudentList() {
+        while (head != nullptr) {
+            Student* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    void insertStudent(int srCode, const string& name, const string& subjectCode, const string& instructorName, const string& scheduleTime) {
+        Student* newStudent = new Student(srCode, name, subjectCode, instructorName, scheduleTime);
+        if (head == nullptr) {
+            head = newStudent;
+        } else {
+            Student* current = head;
+            while (current->next != nullptr) {
+                current = current->next;
+            }
+            current->next = newStudent;
+        }
+    }
+
+    void displayStudent(int studentId) {
+        Student* current = head;
+        while (current != nullptr) {
+            if (current->srCode == studentId) {
+                cout << "Name: " << current->name << endl;
+                cout << "Subject Code: " << current->subjectCode << endl;
+                cout << "Instructor's Name: " << current->instructorName << endl;
+                return;
+            }
+            current = current->next;
+        }
+        cout << "Student not found." << endl;
+    }
+};
+
+int main() {
+    int numStudents;
+    cout << "Enter the number of students: ";
+    cin >> numStudents;
+
+    StudentList studentList;
+
+    for (int i = 0; i < numStudents; i++) {
+        cout << "-----Enter the data for student no. " << i + 1 << "-----" << endl;
+        int srCode;
+        string name, subjectCode, instructorName, scheduleTime;
+        cout << "SR-CODE: ";
+        cin >> srCode;
+        cout << "Name of student: ";
+        cin >> name;
+        cout << "Subject code: ";
+        cin >> subjectCode;
+        cout << "Instructor's name: ";
+        cin >> instructorName;
+        cout << "Schedule time: ";
+        cin >> scheduleTime;
+        cout << endl;
+
+        studentList.insertStudent(srCode, name, subjectCode, instructorName, scheduleTime);
+    }
+
+    int studentId;
+    cout << "\n\nEnter the student ID to display the data: ";
+    cin >> studentId;
+
+    studentList.displayStudent(studentId);
+
+    char choice;
+    cout << "\nTry again? [Y/N]: ";
+    cin >> choice;
+
+    if (choice == 'Y' || choice == 'y') {
+        main();
+    }
+
+    return 0;
+}
